@@ -6,18 +6,26 @@ part 'login_view_model.g.dart';
 @riverpod
 final class LoginViewModel extends _$LoginViewModel {
   @override
-  Future<LoginModel> build() async {
+  LoginModel build() {
     return LoginModel(email: '', password: '');
   }
 
+  void changeEmail(String email) {
+    state = state.copyWith(email: email);
+  }
+
+  void changePassword(String password) {
+    state = state.copyWith(password: password);
+  }
+
   void login(String email, String password) {
-    state = AsyncData(LoginModel(email: email, password: password));
+    state = LoginModel(email: email, password: password);
   }
 
   void logout() {
-    state = const AsyncLoading();
+    state = LoginModel(email: '', password: '');
     Future.delayed(const Duration(seconds: 2), () {
-      state = AsyncData(LoginModel(email: '', password: ''));
+      state = LoginModel(email: '', password: '');
     });
   }
 }

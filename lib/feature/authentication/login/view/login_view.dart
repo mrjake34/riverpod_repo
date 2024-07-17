@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_repo/feature/authentication/login/view_model/address_view_model.dart';
 import 'package:riverpod_repo/feature/authentication/login/view_model/login_view_model.dart';
+import 'package:riverpod_repo/product/base/model/latlong.dart';
 
 class LoginView extends ConsumerWidget {
   LoginView({super.key});
@@ -9,7 +11,6 @@ class LoginView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final labelProvider = ref.watch(loginViewModelProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
@@ -21,11 +22,16 @@ class LoginView extends ConsumerWidget {
               controller: emailController,
               onChanged: (value) {
                 if (value.isEmpty) return;
+                ref.read(loginViewModelProvider.notifier).changeEmail(value);
               },
               decoration: const InputDecoration(labelText: 'Email'),
             ),
             TextField(
               controller: passwordController,
+              onChanged: (value) {
+                if (value.isEmpty) return;
+                ref.read(loginViewModelProvider.notifier).changePassword(value);
+              },
               decoration: const InputDecoration(labelText: 'Password'),
             ),
             ElevatedButton(
@@ -38,17 +44,40 @@ class LoginView extends ConsumerWidget {
               },
               child: const Text('Login'),
             ),
-            labelProvider.when(
-              data: (data) =>
-                  Text('Email: ${data.email} Password: ${data.password}'),
-              loading: () => const CircularProgressIndicator(),
-              error: (error, stack) => Text('Error: $error'),
+            Consumer(
+              builder: (context, ref, child) {
+                final labelProvider = ref.watch(loginViewModelProvider);
+                return Column(
+                  children: [
+                    Text(labelProvider.email),
+                    Text(labelProvider.password),
+                  ],
+                );
+              },
             ),
             ElevatedButton(
               onPressed: () {
                 ref.read(loginViewModelProvider.notifier).logout();
               },
               child: const Text('Logout'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(addressViewModelProvider.notifier).getAddress(LatLong(
+                    latitude: 41.02029580679229,
+                    longitude: 28.661480450000003));
+              },
+              child: const Text('Get Address'),
+            ),
+            Consumer(
+              builder: (context, ref, child) {
+                final addressProvider = ref.watch(addressViewModelProvider);
+                return addressProvider.when(
+                  data: (data) => Text(data),
+                  loading: () => const CircularProgressIndicator(),
+                  error: (error, stackTrace) => Text('Error: $error'),
+                );
+              },
             ),
           ],
         ),
