@@ -16,6 +16,7 @@ final class LoginViewModel extends _$LoginViewModel {
 
   void changePassword(String password) {
     state = state.copyWith(password: password);
+    
   }
 
   void login(String email, String password) {

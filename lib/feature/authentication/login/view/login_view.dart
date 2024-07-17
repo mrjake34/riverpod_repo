@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_repo/feature/authentication/login/view_model/address_view_model.dart';
 import 'package:riverpod_repo/feature/authentication/login/view_model/login_view_model.dart';
+import 'package:riverpod_repo/feature/home/view/home_page.dart';
 import 'package:riverpod_repo/product/base/model/latlong.dart';
 
 class LoginView extends ConsumerWidget {
@@ -41,6 +42,8 @@ class LoginView extends ConsumerWidget {
                 ref
                     .read(loginViewModelProvider.notifier)
                     .login(email, password);
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const HomePage()));
               },
               child: const Text('Login'),
             ),

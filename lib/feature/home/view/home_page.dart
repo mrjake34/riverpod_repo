@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_repo/feature/authentication/login/view_model/login_view_model.dart';
 import 'package:riverpod_repo/feature/home/view_model/todo_list.dart';
 
 class HomePage extends ConsumerWidget {
@@ -10,7 +11,10 @@ class HomePage extends ConsumerWidget {
     final todoList = ref.watch(todoListProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todo List'),
+        title: Consumer(builder: (context, ref, child) {
+          final login = ref.watch(loginViewModelProvider);
+          return Text(login.email);
+        }),
         actions: [
           IconButton(
             icon: const Icon(Icons.clear_rounded),
